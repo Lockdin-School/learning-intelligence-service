@@ -1,5 +1,5 @@
 use uuid::Uuid;
-use crate::core::telemetry::domain::EventType::TelemetryEvent;
+use crate::core::telemetry::domain::TelemetryEventType::TelemetryEvent;
 
 pub struct EventWrapper {
     pub id: Uuid,
