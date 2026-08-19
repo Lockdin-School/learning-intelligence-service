@@ -9,11 +9,13 @@ use crate::core::telemetry::domain::payloads::LessonVideoEventPayloads::{
     LessonVideoSeekedPayload, LessonVideoStartedPayload, LessonVideoViewedPayload,
 };
 use crate::core::telemetry::domain::payloads::QuizEventsPayloads::{QuizAbandonedPayload, QuizCompletedPayload, QuizDurationExpiredPayload, QuizQuestionAttemptedPayload, QuizStartedPayload, QuizSubmittedPayload, QuizViewedPayload};
+use crate::core::telemetry::domain::payloads::ResourceEventsPayloads::{ResourceDownloadedPayload, ResourceViewedPayload};
+use crate::core::telemetry::domain::payloads::SessionEventsPayloads::{SessionEndedPayload, SessionStartedPayload};
 
 pub enum TelemetryEvent {
     // Session
-    SessionStarted,
-    SessionEnded,
+    SessionStarted(SessionStartedPayload),
+    SessionEnded(SessionEndedPayload),
     // Lessons
     LessonVideoViewed(LessonVideoViewedPayload),
     LessonVideoStarted(LessonVideoStartedPayload),
@@ -46,6 +48,6 @@ pub enum TelemetryEvent {
     AssignmentDueDateWarningIssued(AssignmentDueDateWarningIssuedPayload),
     AssignmentOverdueWarningIssued(AssignmentDueDateWarningIssuedPayload),
     // Resources
-    ResourceViewed,
-    ResourceDownloaded,
+    ResourceViewed(ResourceViewedPayload),
+    ResourceDownloaded(ResourceDownloadedPayload),
 }
