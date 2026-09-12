@@ -1,3 +1,4 @@
-pub mod EventWrapper;
+pub mod TelemetryEvent;
 pub mod TelemetryEventType;
 pub mod payloads;
+pub mod TelemetryEventError;
