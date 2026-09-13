@@ -1,10 +1,9 @@
-use std::sync::Arc;
-use uuid::Uuid;
 use crate::core::observations::models::Observation::{Observation, ObservationNew};
 use crate::core::observations::repository::ObservationRepository::ObservationRepository;
-use derive_more::Display;
 use actix_web::{HttpResponse, ResponseError};
-
+use derive_more::Display;
+use std::sync::Arc;
+use uuid::Uuid;
 
 #[derive(Debug, Display)]
 pub enum ObservationServiceError {
@@ -18,13 +17,9 @@ pub enum ObservationServiceError {
 impl ResponseError for ObservationServiceError {
     fn error_response(&self) -> HttpResponse {
         match self {
-            Self::Database(_) => {
-                HttpResponse::InternalServerError().json(self.to_string())
-            }
+            Self::Database(_) => HttpResponse::InternalServerError().json(self.to_string()),
 
-            Self::NotFound => {
-                HttpResponse::NotFound().json(self.to_string())
-            }
+            Self::NotFound => HttpResponse::NotFound().json(self.to_string()),
         }
     }
 }
@@ -48,10 +43,7 @@ impl ObservationService {
         }
     }
 
-    pub async fn find_by_id(
-        &self,
-        id: Uuid,
-    ) -> Result<Observation, ObservationServiceError> {
+    pub async fn find_by_id(&self, id: Uuid) -> Result<Observation, ObservationServiceError> {
         match self.repo.find_by_id(id).await {
             Ok(Some(observation)) => Ok(observation),
             Ok(None) => Err(ObservationServiceError::NotFound),

@@ -1,8 +1,8 @@
+use crate::core::observations::models::ObservationType::ObservationType;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
-use crate::core::observations::models::ObservationType::ObservationType;
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Observation {

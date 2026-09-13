@@ -1,8 +1,8 @@
 use crate::configuration::state::AppState;
+use crate::core::observations::models::Observation::ObservationNew;
 use actix_web::web::{Data, Json, Path};
 use actix_web::{HttpResponse, get, post};
 use uuid::Uuid;
-use crate::core::observations::models::Observation::ObservationNew;
 
 #[post("")]
 pub async fn create_observation(
@@ -50,11 +50,7 @@ pub async fn get_observation_by_id(
         observation_id
     );
 
-    match state
-        .observation_service
-        .find_by_id(observation_id)
-        .await
-    {
+    match state.observation_service.find_by_id(observation_id).await {
         Ok(observation) => {
             log::info!(
                 "observation.get.success | handler | get_observation_by_id | success | \"Observation found.\" | observation_id={}",

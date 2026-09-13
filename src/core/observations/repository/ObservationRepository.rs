@@ -1,18 +1,12 @@
+use crate::core::observations::models::Observation::{Observation, ObservationNew};
 use async_trait::async_trait;
 use uuid::Uuid;
-use crate::core::observations::models::Observation::{Observation, ObservationNew};
 
 #[async_trait]
 pub trait ObservationRepository: Send + Sync {
-    async fn create(
-        &self,
-        observation: &ObservationNew,
-    ) -> sqlx::Result<Observation, sqlx::Error>;
+    async fn create(&self, observation: &ObservationNew) -> sqlx::Result<Observation, sqlx::Error>;
 
-    async fn find_by_id(
-        &self,
-        id: Uuid,
-    ) -> sqlx::Result<Option<Observation>, sqlx::Error>;
+    async fn find_by_id(&self, id: Uuid) -> sqlx::Result<Option<Observation>, sqlx::Error>;
 
     async fn exists_by_source_event(
         &self,

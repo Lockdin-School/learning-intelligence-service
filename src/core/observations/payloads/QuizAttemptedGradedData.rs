@@ -14,7 +14,6 @@ pub struct QuizAttemptGradedData {
     pub items: Vec<QuizItemObservation>,
 }
 
-
 pub struct QuizItemObservation {
     pub question_id: Uuid,
 

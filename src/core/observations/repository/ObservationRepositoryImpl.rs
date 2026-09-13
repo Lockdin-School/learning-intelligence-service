@@ -1,8 +1,8 @@
+use crate::core::observations::models::Observation::{Observation, ObservationNew};
+use crate::core::observations::repository::ObservationRepository::ObservationRepository;
 use async_trait::async_trait;
 use sqlx::PgPool;
 use uuid::Uuid;
-use crate::core::observations::models::Observation::{Observation, ObservationNew};
-use crate::core::observations::repository::ObservationRepository::ObservationRepository;
 
 pub struct PgObservationRepository {
     pool: PgPool,
@@ -16,10 +16,7 @@ impl PgObservationRepository {
 
 #[async_trait]
 impl ObservationRepository for PgObservationRepository {
-    async fn create(
-        &self,
-        observation: &ObservationNew,
-    ) -> sqlx::Result<Observation, sqlx::Error> {
+    async fn create(&self, observation: &ObservationNew) -> sqlx::Result<Observation, sqlx::Error> {
         let id = Uuid::now_v7();
 
         let observation = sqlx::query_as::<_, Observation>(
@@ -47,25 +44,23 @@ impl ObservationRepository for PgObservationRepository {
             created_at
         "#,
         )
-            .bind(id)
-            .bind(observation.event_type)
-            .bind(observation.version)
-            .bind(observation.student_id)
-            .bind(observation.occurred_at)
-            .bind(&observation.source_service)
-            .bind(observation.source_event_id)
-            .bind(&observation.data)
-            .fetch_one(&self.pool)
-            .await?;
+        .bind(id)
+        .bind(observation.event_type)
+        .bind(observation.version)
+        .bind(observation.student_id)
+        .bind(observation.occurred_at)
+        .bind(&observation.source_service)
+        .bind(observation.source_event_id)
+        .bind(&observation.data)
+        .fetch_one(&self.pool)
+        .await?;
 
         Ok(observation)
     }
 
-    async fn find_by_id(
-        &self,
-        id: Uuid,
-    ) -> sqlx::Result<Option<Observation>> {
-        sqlx::query_as("
+    async fn find_by_id(&self, id: Uuid) -> sqlx::Result<Option<Observation>> {
+        sqlx::query_as(
+            "
             SELECT
                 id,
                 event_type,
@@ -78,10 +73,11 @@ impl ObservationRepository for PgObservationRepository {
                 created_at
             FROM observations
             WHERE id = $1
-            ")
-            .bind(id)
-            .fetch_optional(&self.pool)
-            .await
+            ",
+        )
+        .bind(id)
+        .fetch_optional(&self.pool)
+        .await
     }
 
     async fn exists_by_source_event(
@@ -99,10 +95,10 @@ impl ObservationRepository for PgObservationRepository {
         )
         "#,
         )
-            .bind(source_service)
-            .bind(source_event_id)
-            .fetch_one(&self.pool)
-            .await?;
+        .bind(source_service)
+        .bind(source_event_id)
+        .fetch_one(&self.pool)
+        .await?;
 
         Ok(exists)
     }

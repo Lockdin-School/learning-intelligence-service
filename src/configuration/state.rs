@@ -1,9 +1,9 @@
-use std::sync::Arc;
+use crate::core::observations::repository::ObservationRepositoryImpl::PgObservationRepository;
 use crate::core::observations::service::ObservationService::ObservationService;
 use crate::infrastructure::db::database::{init_postgres, run_migrations};
 use actix_web::web::Data;
 use sqlx::PgPool;
-use crate::core::observations::repository::ObservationRepositoryImpl::PgObservationRepository;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -12,9 +12,9 @@ pub struct AppState {
 
 pub fn app_state(pg_pool: PgPool) -> AppState {
     AppState {
-        observation_service: Data::new(ObservationService::new(
-            Arc::new(PgObservationRepository::new(pg_pool.clone())),
-        )),
+        observation_service: Data::new(ObservationService::new(Arc::new(
+            PgObservationRepository::new(pg_pool.clone()),
+        ))),
     }
 }
 
