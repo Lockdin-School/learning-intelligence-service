@@ -2,7 +2,7 @@ use crate::configuration::state::AppState;
 use actix_web::web::{Data, Json, Path};
 use actix_web::{HttpResponse, get, post};
 use uuid::Uuid;
-use crate::core::observation::models::Observation::ObservationNew;
+use crate::core::observations::models::Observation::ObservationNew;
 
 #[post("")]
 pub async fn create_observation(

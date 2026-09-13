@@ -1,9 +1,9 @@
 use std::sync::Arc;
-use crate::core::observation::service::ObservationService::ObservationService;
+use crate::core::observations::service::ObservationService::ObservationService;
 use crate::infrastructure::db::database::{init_postgres, run_migrations};
 use actix_web::web::Data;
 use sqlx::PgPool;
-use crate::core::observation::repository::ObservationRepositoryImpl::PgObservationRepository;
+use crate::core::observations::repository::ObservationRepositoryImpl::PgObservationRepository;
 
 #[derive(Clone)]
 pub struct AppState {

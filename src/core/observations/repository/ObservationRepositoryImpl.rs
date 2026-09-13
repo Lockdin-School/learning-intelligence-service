@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 use sqlx::PgPool;
 use uuid::Uuid;
-use crate::core::observation::models::Observation::{Observation, ObservationNew};
-use crate::core::observation::repository::ObservationRepository::ObservationRepository;
+use crate::core::observations::models::Observation::{Observation, ObservationNew};
+use crate::core::observations::repository::ObservationRepository::ObservationRepository;
 
 pub struct PgObservationRepository {
     pool: PgPool,
@@ -21,25 +21,25 @@ impl ObservationRepository for PgObservationRepository {
         observation: &ObservationNew,
     ) -> sqlx::Result<Observation, sqlx::Error> {
         let id = Uuid::now_v7();
+
         let observation = sqlx::query_as::<_, Observation>(
             r#"
         INSERT INTO observations (
             id,
             event_type,
             version,
-            learner_id,
+            student_id,
             occurred_at,
             source_service,
             source_event_id,
-            data,
-            created_at
+            data
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING
             id,
             event_type,
             version,
-            learner_id,
+            student_id,
             occurred_at,
             source_service,
             source_event_id,
@@ -50,12 +50,11 @@ impl ObservationRepository for PgObservationRepository {
             .bind(id)
             .bind(observation.event_type)
             .bind(observation.version)
-            .bind(observation.learner_id)
+            .bind(observation.student_id)
             .bind(observation.occurred_at)
             .bind(&observation.source_service)
             .bind(observation.source_event_id)
             .bind(&observation.data)
-            .bind(observation.created_at)
             .fetch_one(&self.pool)
             .await?;
 
@@ -71,7 +70,7 @@ impl ObservationRepository for PgObservationRepository {
                 id,
                 event_type,
                 version,
-                learner_id,
+                student_id,
                 occurred_at,
                 source_service,
                 source_event_id,

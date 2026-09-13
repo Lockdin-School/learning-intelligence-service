@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use uuid::Uuid;
-use crate::core::observation::models::Observation::{Observation, ObservationNew};
-use crate::core::observation::repository::ObservationRepository::ObservationRepository;
+use crate::core::observations::models::Observation::{Observation, ObservationNew};
+use crate::core::observations::repository::ObservationRepository::ObservationRepository;
 use derive_more::Display;
 use actix_web::{HttpResponse, ResponseError};
 

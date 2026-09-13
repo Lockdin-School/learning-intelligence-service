@@ -1,5 +1,5 @@
 use actix_web::web;
-use crate::core::observation::api::handlers::{create_observation, get_observation_by_id, observation_exists_by_source_event};
+use crate::core::observations::api::handlers::{create_observation, get_observation_by_id, observation_exists_by_source_event};
 
 pub fn configure(cfg: &mut web::ServiceConfig) {
     log::info!("Configuring routes...");

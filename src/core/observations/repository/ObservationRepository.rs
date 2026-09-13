@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use uuid::Uuid;
-use crate::core::observation::models::Observation::{Observation, ObservationNew};
+use crate::core::observations::models::Observation::{Observation, ObservationNew};
 
 #[async_trait]
 pub trait ObservationRepository: Send + Sync {
