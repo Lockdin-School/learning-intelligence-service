@@ -6,6 +6,11 @@ use uuid::Uuid;
 pub trait ObservationRepository: Send + Sync {
     async fn create(&self, observation: &ObservationNew) -> sqlx::Result<Observation, sqlx::Error>;
 
+    async fn find_by_student_id(
+        &self,
+        student_id: Uuid,
+    ) -> sqlx::Result<Vec<Observation>, sqlx::Error>;
+
     async fn find_by_id(&self, id: Uuid) -> sqlx::Result<Option<Observation>, sqlx::Error>;
 
     async fn exists_by_source_event(

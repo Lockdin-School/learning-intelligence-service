@@ -1,9 +1,10 @@
 use crate::core::observations::models::Observation::{Observation, ObservationNew};
 use crate::core::observations::repository::ObservationRepository::ObservationRepository;
 use async_trait::async_trait;
-use sqlx::PgPool;
+use sqlx::{Error, PgPool};
 use uuid::Uuid;
 
+#[derive(Debug, Clone)]
 pub struct PgObservationRepository {
     pool: PgPool,
 }
@@ -56,6 +57,29 @@ impl ObservationRepository for PgObservationRepository {
         .await?;
 
         Ok(observation)
+    }
+
+    async fn find_by_student_id(&self, student_id: Uuid) -> sqlx::Result<Vec<Observation>, Error> {
+        sqlx::query_as(
+            "
+            SELECT
+                id,
+                event_type,
+                version,
+                student_id,
+                occurred_at,
+                source_service,
+                source_event_id,
+                data,
+                created_at
+            FROM observations
+            WHERE student_id = $1
+            ORDER BY occurred_at DESC
+            ",
+        )
+        .bind(student_id)
+        .fetch_all(&self.pool)
+        .await
     }
 
     async fn find_by_id(&self, id: Uuid) -> sqlx::Result<Option<Observation>> {

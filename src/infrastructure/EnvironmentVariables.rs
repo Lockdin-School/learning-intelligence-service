@@ -3,6 +3,7 @@ pub struct EnvironmentVars {
     pub port: u16,
     pub host: String,
     pub frontend_origin: String,
+    pub services: String
 }
 
 impl EnvironmentVars {
@@ -14,10 +15,12 @@ impl EnvironmentVars {
         let host = std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
         let frontend_origin =
             std::env::var("FRONTEND_ORIGIN").unwrap_or("http://localhost:5173".to_string());
+        let services = std::env::var("SERVICES").unwrap_or("0.0.0.0:8080".to_string());
         Self {
             port,
             host,
             frontend_origin,
+            services
         }
     }
 }

@@ -3,7 +3,10 @@ use crate::core::observations::repository::ObservationRepository::ObservationRep
 use actix_web::{HttpResponse, ResponseError};
 use derive_more::Display;
 use std::sync::Arc;
+use actix_web::web::Data;
+use tokio::sync::broadcast::error::SendError;
 use uuid::Uuid;
+use crate::infrastructure::InternalEventBus::{Event, EventBus};
 
 #[derive(Debug, Display)]
 pub enum ObservationServiceError {
@@ -26,11 +29,36 @@ impl ResponseError for ObservationServiceError {
 
 pub struct ObservationService {
     repo: Arc<dyn ObservationRepository>,
+    event_bus: Data<EventBus>,
 }
 
 impl ObservationService {
-    pub fn new(repo: Arc<dyn ObservationRepository>) -> Self {
-        Self { repo }
+    pub fn new(repo: Arc<dyn ObservationRepository>, event_bus: Data<EventBus>) -> Self {
+        Self { repo, event_bus }
+    }
+
+    pub fn publish_observation(
+        &self,
+        obs: &Observation,
+    ) -> Result<usize, Box<SendError<Event>>> {
+        match self
+            .event_bus
+            .send(Event::QuizAttemptGraded(obs.clone()))
+        {
+            Ok(res) => {
+                log::info!(
+                    "service.observation.publish | service | publish_observation | success | \"Published observation\""
+                );
+                Ok(res)
+            }
+            Err(error) => {
+                log::error!(
+                    "service.observation.publish | service | publish_observation | error | \"Failed to publish observation\" | error: {:?}",
+                    error
+                );
+                Err(Box::from(error))
+            }
+        }
     }
 
     pub async fn create(
@@ -38,7 +66,10 @@ impl ObservationService {
         observation: &ObservationNew,
     ) -> Result<Observation, ObservationServiceError> {
         match self.repo.create(observation).await {
-            Ok(observation) => Ok(observation),
+            Ok(observation) => {
+                let _ = self.publish_observation(&observation);
+                Ok(observation)
+            },
             Err(error) => Err(ObservationServiceError::Database(error)),
         }
     }
@@ -47,6 +78,16 @@ impl ObservationService {
         match self.repo.find_by_id(id).await {
             Ok(Some(observation)) => Ok(observation),
             Ok(None) => Err(ObservationServiceError::NotFound),
+            Err(error) => Err(ObservationServiceError::Database(error)),
+        }
+    }
+
+    pub async fn find_by_student_id(
+        &self,
+        student_id: Uuid,
+    ) -> Result<Vec<Observation>, ObservationServiceError> {
+        match self.repo.find_by_student_id(student_id).await {
+            Ok(observations) => Ok(observations),
             Err(error) => Err(ObservationServiceError::Database(error)),
         }
     }

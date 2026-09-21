@@ -10,7 +10,7 @@ env_logger = "0.11.8"
 dotenv = "0.15.0"
 serde = { version = "1.0.148", features = ["derive"] }
 actix-cors = "0.7.1"
-sqlx = { version = "0.9.0", features = ["runtime-tokio", "chrono", "tls-rustls", "postgres", "uuid"] }
+sqlx = { version = "0.9.0", features = ["runtime-tokio", "chrono", "tls-rustls", "postgres", "uuid", "rust_decimal"] }
 async-trait = "0.1.89"
 uuid = { version = "1.20.0", features = ["serde", "v4", "v7"] }
 chrono = { version = "0.4.43", features = ["serde"] }
@@ -18,3 +18,5 @@ tokio = { version = "1.49.0", features = ["macros", "rt-multi-thread", "full"] }
 serde_json = { version = "1.0.151" }
 thiserror = "2.0.19"
 derive_more = "2.1.1"
+rust_decimal = "1.43.0"
+tracing = "0.1.44"

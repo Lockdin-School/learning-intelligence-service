@@ -38,6 +38,44 @@ pub async fn create_observation(
     }
 }
 
+#[get("/{student_id}/observations")]
+pub async fn get_observations_by_student_id(
+    state: Data<AppState>,
+    student_id: Path<Uuid>,
+) -> actix_web::Result<HttpResponse> {
+    let student_id = student_id.into_inner();
+
+    log::info!(
+        "observation.get_by_student_id.request | handler | get_observations_by_student_id | started | \"Getting observations by student id.\" | student_id={}",
+        student_id
+    );
+
+    match state
+        .observation_service
+        .find_by_student_id(student_id)
+        .await
+    {
+        Ok(observations) => {
+            log::info!(
+                "observation.get_by_student_id.success | handler | get_observations_by_student_id | success | \"Observations found.\" | observations_count={}",
+                observations.len()
+            );
+
+            Ok(HttpResponse::Ok().json(observations))
+        }
+
+        Err(error) => {
+            log::error!(
+                "observation.get_by_student_id.failure | handler | get_observations_by_student_id | failure | \"{:?}\" | student_id={}",
+                error,
+                student_id
+            );
+
+            Ok(HttpResponse::from_error(error))
+        }
+    }
+}
+
 #[get("/{id}")]
 pub async fn get_observation_by_id(
     state: Data<AppState>,
